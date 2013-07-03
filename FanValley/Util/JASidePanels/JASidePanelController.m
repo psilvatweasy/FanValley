@@ -383,10 +383,6 @@ static char ja_kvoContext;
         if (next) {
             [self _loadCenterPanel];
             [self addChildViewController:next];
-            //next.navigationController.navigationBar.frame = CGRectMake(next.navigationController.navigationBar.frame.origin.x, 20, next.navigationController.navigationBar.frame.size.width, 200);
-            [LogManager Log_Quick:@"N Y --> %f", next.navigationController.navigationBar.frame.origin.y];
-            [LogManager Log_Quick:@"N Height --> %f", next.navigationController.navigationBar.frame.size.height];
-            [LogManager Log_Quick:@"-----\n"];
             [self.centerPanelContainer addSubview:next.view];
             [next didMoveToParentViewController:self];
         }
@@ -523,10 +519,10 @@ static char ja_kvoContext;
         case JASidePanelCenterVisible: {
             if (deltaX > 0.0f) {
                 [self _showLeftPanel:YES bounce:self.bounceOnSidePanelOpen];
-                [self.leftPanel viewWillAppear:YES];
+                [self.leftPanel isBeingPresented];
             } else {
                 [self _showRightPanel:YES bounce:self.bounceOnSidePanelOpen];
-                [self.rightPanel viewWillAppear:YES];
+                [self.rightPanel isBeingPresented];
             }
             break;
 		}
@@ -954,6 +950,7 @@ static char ja_kvoContext;
     if (self.state == JASidePanelLeftVisible) {
         [self _showCenterPanel:YES bounce:NO];
     } else if (self.state == JASidePanelCenterVisible) {
+        [self.leftPanel isBeingPresented];
         [self _showLeftPanel:YES bounce:NO];
     }
 }

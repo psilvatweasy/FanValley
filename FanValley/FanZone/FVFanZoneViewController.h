@@ -7,7 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GAITrackedViewController.h"
 
-@interface FVFanZoneViewController : UIViewController
+@interface FVFanZoneViewController : GAITrackedViewController
 
+- (IBAction)OpenMyFanClubsList:(id)sender;
 @end

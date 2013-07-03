@@ -80,7 +80,7 @@
     
     viewDidLoadHasBeenCalled = YES;
     
-    int nextYPosition = 20;
+    int nextYPosition = 0;
     int pageViewHeight = 0;
     if (!self.disableUIPageControl){
         //create and add the UIPageControl

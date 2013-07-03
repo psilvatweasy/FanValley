@@ -16,4 +16,5 @@
     #import "LogManager.h"
     #import "Constants.h"
     #import "Helpers.h"
+    #import "FacebookManager.h"
 #endif

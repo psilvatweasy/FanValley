@@ -7,15 +7,23 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "GAITrackedViewController.h"
 
-@interface FVLeftMenuViewController : UIViewController
+@interface FVLeftMenuViewController : GAITrackedViewController <FacebookAPI>
 
 @property (weak, nonatomic) IBOutlet UIView *ViewFanHeader;
 @property (weak, nonatomic) IBOutlet UIButton *BTFacebookLogin;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 
+@property (weak, nonatomic) IBOutlet FBProfilePictureView *profileImg;
+@property (weak, nonatomic) IBOutlet UILabel *lblName;
+
+@property (weak, nonatomic) IBOutlet UIButton *BTLogout;
+
 
 - (IBAction)LoginWithFacebook:(id)sender;
+- (IBAction)Logout:(id)sender;
+
 
 - (IBAction)OpenFanZone:(id)sender;
 - (IBAction)OpenFanClub:(id)sender;

@@ -27,7 +27,7 @@
 @synthesize token_expiration = _token_expiration;
 @synthesize userId_current = _userId_current;
 
-//NSString *const FBSessionStateChangedNotification = @"com.tweasy.Tweasy:FBSessionStateChangedNotification";
+NSString *const FBSessionStateChangedNotification = @"com.named.FanValley:FBSessionStateChangedNotification";
 
 
 - (id)init{
@@ -144,7 +144,7 @@
 
 - (FBSessionState *) getSessionState{
     
-    return [[FBSession activeSession] state];
+    return (FBSessionState *)[[FBSession activeSession] state];
     
 }
 

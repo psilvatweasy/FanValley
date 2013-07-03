@@ -7,9 +7,12 @@
 //
 
 #import "FVFanZoneViewController.h"
+#import "GAI.h"
+#import "FVAppDelegate.h"
+#import "FVFanClubListLoggedOutViewController.h"
 
 @interface FVFanZoneViewController ()
-
+@property (nonatomic, strong) FVAppDelegate *delegate;
 @end
 
 @implementation FVFanZoneViewController
@@ -26,6 +29,8 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    self.delegate  = (FVAppDelegate *) [[UIApplication sharedApplication] delegate];
+    [self setTitle:@"Fan Zone"];
     // Do any additional setup after loading the view from its nib.
 }
 
@@ -37,15 +42,21 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 
-    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 0, self.navigationController.navigationBar.frame.size.width, 64);
+//    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 0, self.navigationController.navigationBar.frame.size.width, 64);
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    [LogManager Log_Quick:@"Y --> %f", self.navigationController.navigationBar.frame.origin.y];
-    [LogManager Log_Quick:@"Height --> %f", self.navigationController.navigationBar.frame.size.height];
-    [LogManager Log_Quick:@"-----\n"];
-    
-    
+    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+    [tracker sendView:@"Fan Zone"];
 }
 
+- (IBAction)OpenMyFanClubsList:(id)sender {
+    if ([self.delegate.fbManager openNewSession:self allowLoginUI:NO requestUserID:NO]) {
+    
+    }else{
+    
+        [self.navigationController pushViewController:[[FVFanClubListLoggedOutViewController alloc] init] animated:YES];
+    }
+    
+}
 @end

@@ -8,14 +8,22 @@
 
 #import <UIKit/UIKit.h>
 #import "FVDataBaseManager.h"
-
+#import "FacebookManager.h"
 #import "JASidePanelController.h"
+
 
 @interface FVAppDelegate : UIResponder <UIApplicationDelegate>
 
+
 @property (strong, nonatomic) UIWindow *window;
 
+@property (strong, nonatomic) FacebookManager *fbManager;
 @property (strong, nonatomic) FVDataBaseManager *db_manager;
+//@property (strong, nonatomic) Locator *locator_manager;
+
+
+
+
 
 @property (strong, nonatomic) JASidePanelController *mainViewController;
 
