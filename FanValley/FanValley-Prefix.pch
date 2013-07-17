@@ -17,4 +17,5 @@
     #import "Constants.h"
     #import "Helpers.h"
     #import "FacebookManager.h"
+    #import "JASidePanelController.h"
 #endif

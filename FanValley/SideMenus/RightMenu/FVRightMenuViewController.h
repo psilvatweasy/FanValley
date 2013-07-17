@@ -8,6 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-@interface FVRightMenuViewController : UIViewController
 
+@interface FVRightMenuViewController : UIViewController <UITableViewDataSource, UITableViewDelegate>
+
+@property (weak, nonatomic) IBOutlet UITableView *tableView;
 @end

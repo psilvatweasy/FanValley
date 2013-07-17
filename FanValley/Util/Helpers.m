@@ -90,21 +90,14 @@
 
 + (NSString *) getOrderListPost:(int) n{
     switch (n) {
-    case 0:
-        return TWEASY_REQUEST_ORDER_CLOSER;
-        break;
-    case 1:
-        return TWEASY_REQUEST_ORDER_RECENT;
-        break;
-    case 2:
-        return TWEASY_REQUEST_ORDER_RECENT;
-        break;
-        
-    default:
-        return TWEASY_REQUEST_ORDER_RECENT;
-        break;
+        case 0:
+            return @"";
+            break;
+        default:
+            return @"";
+            break;
     }
-
+    
 }
 
 + (NSMutableArray *) orderArrayofCampaignsByPriority:(NSMutableArray *) array ascendingOrder:(BOOL) asc{
@@ -403,14 +396,14 @@
             [dateFormatter setDateFormat:@"dd.MM.yyyy"];
             return [dateFormatter stringFromDate:epochNSDate];
         }else{
-            [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:TWESY_FORM_BIRTHDAY];
+            [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@""];
             [[NSUserDefaults standardUserDefaults] synchronize];
             return @"";
         }
         
     }
     @catch (NSException *exception) {
-        [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:TWESY_FORM_BIRTHDAY];
+        [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@""];
         [[NSUserDefaults standardUserDefaults] synchronize];
         return @"";
     }
@@ -434,7 +427,7 @@
     }
     @catch (NSException *exception) {
         
-        [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:TWESY_FORM_BIRTHDAY];
+        [[NSUserDefaults standardUserDefaults] setValue:@"" forKey:@""];
         [[NSUserDefaults standardUserDefaults] synchronize];
         return @"";
     }

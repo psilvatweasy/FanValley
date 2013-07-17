@@ -11,6 +11,7 @@
 #import "TTSlidingPageTitle.h"
 
 #import "FVAppDelegate.h"
+#import "FVLoginViewController.h"
 
 @interface FVTourViewController ()
 
@@ -30,24 +31,13 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    // Do any additional setup after loading the view from its nib.
     
     TTScrollSlidingPagesController *slider = [[TTScrollSlidingPagesController alloc] init];
     [slider setTitleScrollerHidden:YES];
-    slider.dataSource = self; /*the current view controller (self) conforms to the TTSlidingPagesDataSource protocol)*/
-    //slider.view.frame = self.view.frame; //I'm setting up the view to be fullscreen in the current view
+    slider.dataSource = self;
     [self.view addSubview:slider.view];
     [self addChildViewController:slider];
     
-//    UIButton *bt = [UIButton buttonWithType:UIButtonTypeRoundedRect];
-//    [bt addTarget:self
-//           action:@selector(exitTour:)
-// forControlEvents:UIControlEventTouchDown];
-//    [bt setTitle:@"Exit" forState:UIControlStateNormal];
-//    
-//    bt.frame = CGRectMake(50.0, 50.0, 100.0, 100.0);
-//    
-//    [self.view addSubview:bt];
 
 }
 
@@ -95,8 +85,10 @@
 
 
 - (void) exitTour:(UIButton *)sender{
-    FVAppDelegate *delegate = (FVAppDelegate *) [[UIApplication sharedApplication] delegate];
-    [delegate quitTourAndStartApp];
+
+    if ([self.parentViewController isKindOfClass:[FVLoginViewController class]]) {
+        [self.parentViewController closeViewController];
+    }
 
 }
 

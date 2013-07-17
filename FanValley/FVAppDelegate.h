@@ -9,7 +9,7 @@
 #import <UIKit/UIKit.h>
 #import "FVDataBaseManager.h"
 #import "FacebookManager.h"
-#import "JASidePanelController.h"
+
 
 
 @interface FVAppDelegate : UIResponder <UIApplicationDelegate>

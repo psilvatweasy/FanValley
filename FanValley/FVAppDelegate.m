@@ -13,7 +13,9 @@
 #import "FVRightMenuViewController.h"
 
 #import "FVTourViewController.h"
-#import "GAI.h"
+
+#import "FVLoginViewController.h"
+
 
 @implementation FVAppDelegate
 
@@ -84,17 +86,18 @@
     
     [FBProfilePictureView class];
     
-    // Optional: automatically send uncaught exceptions to Google Analytics.
-    [GAI sharedInstance].trackUncaughtExceptions = YES;
-    // Optional: set Google Analytics dispatch interval to e.g. 20 seconds.
-    [GAI sharedInstance].dispatchInterval = 1;
-    // Optional: set debug to YES for extra debugging information.
-    [GAI sharedInstance].debug = NO;
-    // Create tracker instance.
-    id<GAITracker> tracker = [[GAI sharedInstance] trackerWithTrackingId:@"UA-42002190-1"];
-
+//    // Optional: automatically send uncaught exceptions to Google Analytics.
+//    [GAI sharedInstance].trackUncaughtExceptions = YES;
+//    // Optional: set Google Analytics dispatch interval to e.g. 20 seconds.
+//    [GAI sharedInstance].dispatchInterval = 1;
+//    // Optional: set debug to YES for extra debugging information.
+//    [GAI sharedInstance].debug = NO;
+//    // Create tracker instance.
+//    [[GAI sharedInstance] trackerWithTrackingId:@"UA-42002190-1"];
     
-    //[GAI sharedInstance].debug = YES;
+    // Let the device know we want to receive push notifications
+	[[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     self.db_manager = [[FVDataBaseManager alloc] init];
     
@@ -106,26 +109,31 @@
     self.mainViewController.shouldDelegateAutorotateToVisiblePanel = NO;
     
 	self.mainViewController.leftPanel = [[FVLeftMenuViewController alloc] init];
+    self.mainViewController.rightPanel = [[FVRightMenuViewController alloc] init];
 	self.mainViewController.centerPanel = [[UINavigationController alloc] initWithRootViewController:[[FVFanZoneViewController alloc] init]];
-	self.mainViewController.rightPanel = [[FVRightMenuViewController alloc] init];
-    
-    if ([[NSUserDefaults standardUserDefaults] boolForKey:HAS_LAUNCH_ONCE])
-    {
-        // app already launched
-        self.window.rootViewController = self.mainViewController;
-    }
-    else
-    {
-        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
 
-        FVTourViewController *tourView = [[FVTourViewController alloc] init];
-        self.window.rootViewController = tourView;
-        
-    }
+  
+    self.window.rootViewController = self.mainViewController;
+
+    
+//    if ([[NSUserDefaults standardUserDefaults] boolForKey:HAS_LAUNCH_ONCE])
+//    {
+//        // app already launched
+//        self.window.rootViewController = self.mainViewController;
+//    }
+//    else
+//    {
+//        [[NSUserDefaults standardUserDefaults] setBool:YES forKey:@"HasLaunchedOnce"];
+//
+//        FVTourViewController *tourView = [[FVTourViewController alloc] init];
+//        self.window.rootViewController = tourView;
+//        
+//    }
 	
     
     
     [self.window makeKeyAndVisible];
+    [self.mainViewController presentViewController:[[FVLoginViewController alloc] init] animated:NO completion:nil];
     
 
     return YES;
@@ -139,9 +147,9 @@
 - (void)applicationDidEnterBackground:(UIApplication *)application{
     // Use this method to release shared resources, save user data, invalidate timers, and store enough application state information to restore your application to its current state in case it is terminated later. 
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
-    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-    
-    [tracker close];
+//    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+//    
+//    [tracker close];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application{
@@ -157,9 +165,9 @@
     // Saves changes in the application's managed object context before the application terminates.
     [self.db_manager saveContext];
     
-    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-    
-    [tracker close];
+//    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+//    
+//    [tracker close];
 }
 
 - (BOOL)application: (UIApplication *)application openURL: (NSURL *)url sourceApplication: (NSString *)sourceApplication annotation: (id)annotation {
@@ -172,6 +180,24 @@
 //    }
     
     // ...
+}
+
+- (void) application:(UIApplication*)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData*)deviceToken{
+    NSString *deviceTokenString = [[deviceToken description] stringByTrimmingCharactersInSet:[NSCharacterSet characterSetWithCharactersInString:@"<>"]];
+    deviceTokenString = [deviceTokenString stringByReplacingOccurrencesOfString:@" " withString:@""];
+    
+	[LogManager Log_Info_Messages:@"My token is: %@", deviceTokenString];
+    FVHttpClient *req = [[FVHttpClient alloc] initWithCallback:self];
+    [req registerPushNotifications:deviceTokenString];
+
+}
+
+- (void) application:(UIApplication*)application didFailToRegisterForRemoteNotificationsWithError:(NSError*)error{
+	[LogManager Log_Error_Level_2_Messages:@"Failed to get token, error: %@", error];
+}
+
+- (void) application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo{
+    
 }
 
 #pragma mark -

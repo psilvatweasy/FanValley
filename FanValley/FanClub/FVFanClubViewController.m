@@ -10,7 +10,7 @@
 #import "UIScrollView+APParallaxHeader.h"
 #import "FVCustomCell.h"
 #import "FVGridCustomCell.h"
-#import "GAI.h"
+
 
 @interface FVFanClubViewController ()
 
@@ -100,8 +100,8 @@
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-    [tracker sendView:@"Fan Card"];
+//    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+//    [tracker sendView:@"Fan Card"];
 }
 
 - (void)didReceiveMemoryWarning

@@ -33,7 +33,7 @@
     [super viewDidLoad];
     self.scrollView.contentSize= CGSizeMake(320, 1000);
     self.delegate  = (FVAppDelegate *) [[UIApplication sharedApplication] delegate];
-    
+
     // Do any additional setup after loading the view from its nib.
 
 }

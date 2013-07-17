@@ -7,9 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GAITrackedViewController.h"
 
-@interface FVLeftMenuViewController : GAITrackedViewController <FacebookAPI>
+
+@interface FVLeftMenuViewController : UIViewController <FacebookAPI>
 
 @property (weak, nonatomic) IBOutlet UIView *ViewFanHeader;
 @property (weak, nonatomic) IBOutlet UIButton *BTFacebookLogin;

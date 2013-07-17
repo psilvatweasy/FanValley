@@ -19,14 +19,14 @@
 - (NSString *) ParseMethodArgsToJsonString;
 - (NSString *) BuildHashWithKey:(NSString *) key WithDataString:(NSString*) dataString ToMethod:(NSString*) method;
 
-- (void) addParameterToArgsWithKey:(NSString*)key AndValueWithString:(NSString*)value;
+//- (void) addParameterToArgsWithKey:(NSString*)key AndValueWithString:(NSString*)value;
 
 @end
 
 @implementation FVHttpClient
 
-- (id)initWithtUrl:(NSString*) url Method:(NSString*) method CallBack:(id) callback{
-    self = [super initWithURL:url WithMethod:method];
+- (id)initWithCallback:(id) callback{
+    self = [super init];
     
     self.callback = callback;
     
@@ -57,49 +57,83 @@
 
 - (NSString *) BuildHashWithKey:(NSString *) key WithDataString:(NSString*) dataString ToMethod:(NSString*) method{
 
-    int timestamp_ = [[NSDate date] timeIntervalSince1970];
-    NSString *message = [NSString stringWithFormat: @"%@%@%@%d%@", TWEASY_REQUEST_CLASS, method, dataString, timestamp_, USER];
-
-    
-    return [Helpers hmac256WithKey:SECRET_KEY AndData:message];
+//    int timestamp_ = [[NSDate date] timeIntervalSince1970];
+//    NSString *message = [NSString stringWithFormat: @"%@%@%@%d%@", TWEASY_REQUEST_CLASS, method, dataString, timestamp_, USER];
+//
+//    
+//    return [Helpers hmac256WithKey:SECRET_KEY AndData:message];
+    return @"";
 }
 
-- (void) addParameterToArgsWithKey:(NSString*)key AndValueWithString:(NSString*)value{
-    if (self.args.length > 0) {
-        self.args = [NSString stringWithFormat:@"%@,\"%@\":\"%@\"",self.args,key,value];
-    }else{
-    
-        self.args = [NSString stringWithFormat:@"{\"%@\":\"%@\"",key,value];
-    }
+- (void) registerDevice{
+    /*
+     /register-device
+     
+     - uniqueId *
+     - os : android|ios *
+     - os_version : 4.04 *
+     - application_version *
+     - latitude
+     - longitude
+     - macAddress
+     - timezone
+     
+     */
 
-}
+    self.type_call = FANVALLEY_REQUEST_REGISTER;
+    [self setRequestWithUrl:FANVALLEY_URL UrlService:FANVALLEY_SERVICE_REGISTER HttpMethod:HTTP_METHOD_POST];
 
-- (void) RequestMe_Search:(id)callback withParameterName:(NSString *) searchText{
+    [self addParameterToBodyWithKey:@"uniqueId" AndValue:[Helpers getUUID]];
+    [self addParameterToBodyWithKey:@"os" AndValue:@"ios"];
+    [self addParameterToBodyWithKey:@"os_version" AndValue:[[UIDevice currentDevice] systemVersion]];
+    [self addParameterToBodyWithKey:@"application_version" AndValue:[[NSBundle mainBundle] objectForInfoDictionaryKey:@"CFBundleVersion"]];
 
-    self.type_call = 10;
+    [self addParameterToBodyWithKey:@"longitude" AndValue:@""];
+    [self addParameterToBodyWithKey:@"latitude" AndValue:@""];
     
-    [self addParameterToArgsWithKey:@"unique_application_id" AndValueWithString:[[NSUserDefaults standardUserDefaults] valueForKey:UNIQUE_APP_ID]];
-    [self addParameterToArgsWithKey:@"longitude" AndValueWithString:@""];
-    [self addParameterToArgsWithKey:@"latitude" AndValueWithString:@""];
-    [self addParameterToArgsWithKey:@"text" AndValueWithString:searchText];
-    [self addParameterToArgsWithKey:@"type" AndValueWithString:TWEASY_SEARCH_TYPE_ALL];
+    [self addParameterToBodyWithKey:@"timezone" AndValue:[NSString stringWithFormat:@"%f",[[NSDate date] timeIntervalSince1970]]];
     
-    NSString *dataString = [self ParseMethodArgsToJsonString];
-    
-    NSString *hash = [self BuildHashWithKey:SECRET_KEY WithDataString:dataString ToMethod:TWEASY_REQUEST_METHOD_SEARCH];
-    
-    dataString = [Helpers urlencode:dataString];
-    
-    [self addParameterToBodyWithKey:@"client_id" AndValueWithString:USER];
-    [self addParameterToBodyWithKey:@"class" AndValueWithString:TWEASY_REQUEST_CLASS];
-    [self addParameterToBodyWithKey:@"method" AndValueWithString:TWEASY_REQUEST_METHOD_SEARCH];
-    [self addParameterToBodyWithKey:@"args" AndValueWithString:dataString];
-    [self addParameterToBodyWithKey:@"time" AndValueWithInt:[[NSDate date] timeIntervalSince1970]];
-    [self addParameterToBodyWithKey:@"hash" AndValueWithString:hash];
-    
-    [self setRequestZipped];
     [self sendRequest:self];
+}
+
+- (void) registerPushNotifications:(NSString*) pushId{
+    /*
+     /register-push
+     
+     - uniqueId*
+     - pushId*
+     
+     */
     
+    self.type_call = FANVALLEY_REQUEST_REGISTER_PUSH_NOTIFICATION;
+    [self setRequestWithUrl:FANVALLEY_URL UrlService:FANVALLEY_SERVICE_REGISTER_PUSH_NOTIFICATION HttpMethod:HTTP_METHOD_POST];
+    
+    [self addParameterToBodyWithKey:@"uniqueId" AndValue:[Helpers getUUID]];
+    [self addParameterToBodyWithKey:@"pushId" AndValue:pushId];
+
+    
+    [self sendRequest:self];
+}
+
+- (void) searchClubs:(NSString*) name Country:(NSString*)country Sport:(NSString*) sport{
+    /*
+      /search-clubs/
+     
+     - name
+     - country
+     - sport
+     
+     */
+    
+    self.type_call = FANVALLEY_REQUEST_SEARCH_CLUBS;
+    [self setRequestWithUrl:FANVALLEY_URL UrlService:FANVALLEY_SERVICE_SEARCH_CLUBS HttpMethod:HTTP_METHOD_GET];
+    
+    [self addParameterToHeaderWithKey:@"name" AndValue:name];
+    [self addParameterToHeaderWithKey:@"country" AndValue:country];
+    [self addParameterToHeaderWithKey:@"sport" AndValue:sport];
+    
+    
+    [self sendRequest:self];
 }
 
 #pragma mark NSURLConnection Delegate Methods
@@ -110,15 +144,15 @@
 
 - (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response{
     
-    //    NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
-    //    if ([response respondsToSelector:@selector(allHeaderFields)]) {
-    //		NSDictionary *dictionary = [httpResponse allHeaderFields];
-    //     [LogManager Log_General_Level_1_Messages:[dictionary description]];
-    //	}
-    //    int code = [httpResponse statusCode];
-    //   	    [LogManager Log_General_Level_2_Messages:@"TESTE --> didReceiveResponse"];
-    //        [LogManager Log_General_Level_2_Messages:@"DidReceiveResponse --> %d", code];
-    //    self.responseCode = code;
+    NSHTTPURLResponse* httpResponse = (NSHTTPURLResponse*)response;
+    if ([response respondsToSelector:@selector(allHeaderFields)]) {
+        NSDictionary *dictionary = [httpResponse allHeaderFields];
+        [LogManager Log_General_Level_1_Messages:[dictionary description]];
+    }
+    int code = [httpResponse statusCode];
+    //[LogManager Log_General_Level_2_Messages:@"TESTE --> didReceiveResponse"];
+    [LogManager Log_General_Level_2_Messages:@"DidReceiveResponse --> %d", code];
+    self.responseCode = code;
     
 }
 
@@ -137,16 +171,7 @@
         return;
     }
     
-    if ([[json objectForKey:@"status"] isEqualToString:@"exception"]) {
-        if ([[json objectForKey:@"exception"] isEqualToString:TWEASY_EXCEPTION_USER_DOES_NOT_EXIST]) {
-            self.type_call_exception = TWEASY_EXCEPTION_USER_DOES_NOT_EXIST_CALLBACK;
-            [self connection:connection didFailWithError:nil];
-            return;
-        }else{
-            [self connection:connection didFailWithError:nil];
-            return;
-        }
-    }
+
     
     [self.responseData appendData:data];
     
@@ -155,61 +180,10 @@
 - (void)connection:(NSURLConnection *) connection didFailWithError:(NSError *)error{
 	[LogManager Log_Error_Level_1_Messages:@"TESTE --> didFailWithError -->%@",error];
     
-    if (self.type_call_exception == TWEASY_EXCEPTION_USER_DOES_NOT_EXIST_CALLBACK) {
-        return;
-    }
     
     switch (self.type_call) {
-        case TWEASY_REQUEST_ME_REGISTER:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_REGISTER];
-            break;
-        case TWEASY_REQUEST_ME_SEARCH_NOT_TO_DB:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_SEARCH_NOT_TO_DB];
-            break;
-        case TWEASY_REQUEST_ME_FAVORITE_CAMPAIGNS:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_FAVORITE_CAMPAIGNS];
-            break;
-        case TWEASY_REQUEST_ME_FACEBOOK:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_FACEBOOK];
-            break;
-        case TWEASY_REQUEST_ME_PROFILE:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_PROFILE];
-            break;
-        case TWEASY_REQUEST_ME_SAVE_PROFILE:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_SAVE_PROFILE];
-            break;
-        case TWEASY_REQUEST_ME_SHARE:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_SHARE];
-            break;
-        case TWEASY_REQUEST_ME_SEARCH_NEXT_PAGE:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_SEARCH_NEXT_PAGE];
-            break;
-        case TWEASY_REQUEST_ME_CAMPAIGN:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_CAMPAIGN];
-            break;
-        case TWEASY_REQUEST_ME_USER:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_USER];
-            break;
-        case TWEASY_REQUEST_ME_CATEGORIES:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_ME_CATEGORIES];
-            break;
-        case TWEASY_REQUEST_ME_CONTEST:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_CONTEST];
-            break;
-        case TWEASY_REQUEST_ME_COUPON:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_COUPON];
-            break;
-        case TWEASY_REQUEST_ME_FEEDBACK:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_FEEDBACK];
-            break;
-        case TWEASY_REQUEST_ME_VIEW:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_VIEW];
-            break;
-        case TWEASY_REQUEST_ME_PASSBOOK:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_PASSBOOK];
-            break;
-        case TWEASY_REQUEST_ME_FAVOUITE:
-            [self.callback dataFailed:error callbackCode:TWEASY_RESPONSE_CALLBACK_FAVOURITE];
+        case FANVALLEY_REQUEST_REGISTER:
+            [self.callback dataFailed:error callbackCode:FANVALLEY_RESPONSE_CALLBACK_REGISTER];
             break;
             
         default:
@@ -235,19 +209,9 @@
         return;
     }
     
-    if ([[json objectForKey:@"status"] isEqualToString:@"exception"]) {
-        if ([[json objectForKey:@"exception"] isEqualToString:TWEASY_EXCEPTION_USER_DOES_NOT_EXIST]) {
-            self.type_call_exception = TWEASY_EXCEPTION_USER_DOES_NOT_EXIST_CALLBACK;
-            [self connection:connection didFailWithError:nil];
-            return;
-        }else{
-            [self connection:connection didFailWithError:nil];
-            return;
-        }
-    }
-    
+       
     switch (self.type_call) {
-        case TWEASY_REQUEST_ME_REGISTER:
+        case FANVALLEY_REQUEST_REGISTER:
             json = [NSJSONSerialization JSONObjectWithData:self.responseData options:kNilOptions error:&error];
             
             if (self.responseCode != 200 && self.responseCode != -1) {
@@ -255,26 +219,15 @@
                 [self connection:connection didFailWithError:nil];
                 return;
             }
-            
-            
-            
-            json = [NSJSONSerialization JSONObjectWithData:self.responseData options:kNilOptions error:&error];
             short_id = [json objectForKey:@"data"];
             
-            [[NSUserDefaults standardUserDefaults] setValue:short_id forKey:SHORT_ME_ID];
-            [[NSUserDefaults standardUserDefaults] synchronize];
-            break;
-            
-        case TWEASY_REQUEST_ME_CATEGORIES:
-            if (self.responseCode != 200 && self.responseCode != -1) {
-                [LogManager Log_Error_Level_1_Messages:@"Error--> %@  -- %@ ",json, error];
-                [self connection:connection didFailWithError:nil];
-                return;
-            }
-            //[self didReceiveData_TWEASY_REQUEST_ME_CATEGORIES];
-            
-            break;
+            [self didReceiveData_FANVALLEY_REQUEST_REGISTER];
 
+
+
+            
+            break;
+            
             
         default:
             
@@ -289,15 +242,17 @@
 
 - (void) finishConnection{
     switch (self.type_call) {
-        case TWEASY_REQUEST_ME_REGISTER:
-            [self.callback dataReceived:@"OK" callbackCode:TWEASY_RESPONSE_CALLBACK_ME_REGISTER];
+        case FANVALLEY_REQUEST_REGISTER:
+            [self.callback dataReceived:@"OK" callbackCode:FANVALLEY_RESPONSE_CALLBACK_REGISTER];
             break;
-        case TWEASY_REQUEST_ME_PROFILE:
-            [self.callback dataReceived:@"OK" callbackCode:TWEASY_RESPONSE_CALLBACK_ME_PROFILE];
 
         default:
             break;
     }
+}
+
+-(void) didReceiveData_FANVALLEY_REQUEST_REGISTER{
+
 }
 
 

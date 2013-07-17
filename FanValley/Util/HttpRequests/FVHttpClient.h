@@ -18,9 +18,12 @@
 @property (nonatomic, strong) NSString *args;
 
 
-- (id)initWithtUrl:(NSString*) url Method:(NSString*) method CallBack:(id) callback;
+- (id)initWithCallback:(id) callback;
+- (void) registerDevice;
+- (void) registerPushNotifications:(NSString*) pushId;
+- (void) searchClubs:(NSString*) name Country:(NSString*)country Sport:(NSString*) sport;
 
-- (void) RequestMe_Search:(id)callback withParameterName:(NSString *) searchText;
+
 
 
 @end

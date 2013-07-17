@@ -7,9 +7,15 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "GAITrackedViewController.h"
 
-@interface FVFanZoneViewController : GAITrackedViewController
+#import "FVHttpClient.h"
+#import "FVApiReceiver.h"
+
+@interface FVFanZoneViewController : UIViewController <FVApiReceiver>
 
 - (IBAction)OpenMyFanClubsList:(id)sender;
+- (IBAction)OpenSearchClubView:(id)sender;
+- (IBAction)OpenShareView:(id)sender;
+
+
 @end

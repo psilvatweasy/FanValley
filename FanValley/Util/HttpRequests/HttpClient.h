@@ -16,14 +16,12 @@
 
 @property (strong, nonatomic) NSMutableURLRequest *request;
 
-- (id)initWithURL:(NSString*)url WithMethod:(NSString*)method;
 
-- (void) addParameterToBodyWithKey:(NSString*)key AndValueWithString:(NSString*)value;
-- (void) addParameterToBodyWithKey:(NSString*)key AndValueWithInt:(int)value;
+- (void) addParameterToBodyWithKey:(NSString*)key AndValue:(id)value;
 
-- (void) addParameterToHeaderWithKey:(NSString*)key AndValueWithString:(NSString*)value;
-- (void) addParameterToHeaderWithKey:(NSString*)key AndValueWithInt:(int)value;
+- (void) addParameterToHeaderWithKey:(NSString*)key AndValue:(id)value;
 
+- (void) setRequestWithUrl:(NSString *)url UrlService:(NSString*)service HttpMethod:(NSString*)method;
 - (void) setRequestZipped;
 
 - (void) sendRequest:(id) delegate;

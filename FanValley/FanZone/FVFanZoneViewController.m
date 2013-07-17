@@ -7,7 +7,6 @@
 //
 
 #import "FVFanZoneViewController.h"
-#import "GAI.h"
 #import "FVAppDelegate.h"
 #import "FVFanClubListLoggedOutViewController.h"
 
@@ -42,16 +41,16 @@
 
 -(void)viewWillAppear:(BOOL)animated{
 
-//    self.navigationController.navigationBar.frame = CGRectMake(self.navigationController.navigationBar.frame.origin.x, 0, self.navigationController.navigationBar.frame.size.width, 64);
+    //[req searchClubs:@"" Country:@"" Sport:@""];
 }
 
 -(void)viewDidAppear:(BOOL)animated{
-    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
-    [tracker sendView:@"Fan Zone"];
+//    id<GAITracker> tracker = [[GAI sharedInstance] defaultTracker];
+//    [tracker sendView:@"Fan Zone"];
 }
 
 - (IBAction)OpenMyFanClubsList:(id)sender {
-    if ([self.delegate.fbManager openNewSession:self allowLoginUI:NO requestUserID:NO]) {
+    if ([self.delegate.fbManager openNewSession:nil allowLoginUI:NO requestUserID:NO]) {
     
     }else{
     
@@ -59,4 +58,20 @@
     }
     
 }
+
+- (IBAction)OpenSearchClubView:(id)sender {
+    [self.navigationController pushViewController:[[FVFanClubListLoggedOutViewController alloc] init] animated:YES];
+}
+
+- (IBAction)OpenShareView:(id)sender {
+}
+
+#pragma mark -
+#pragma mark HTTP RECEIVER Protocol methods
+- (void) dataReceived:(NSString*)data callbackCode:(int) code{}
+- (void) dataReceived:(NSString*)data withObject:(id)object callbackCode:(int) code{}
+- (void) dataReceivedWithData:(NSData*)data callbackCode:(int) code{}
+- (void) dataNotReceivedCauseWrongTime{}
+- (void) dataFailed:(NSError*)error callbackCode:(int)code;{}
+
 @end

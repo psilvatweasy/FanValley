@@ -11,4 +11,6 @@
 
 @interface FVTourViewController : UIViewController <TTSlidingPagesDataSource>
 
+@property (nonatomic) id parentViewController;
+
 @end
